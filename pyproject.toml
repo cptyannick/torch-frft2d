@@ -1,0 +1,75 @@
+[project]
+name = "torch-frft2d"
+version = "0.1.0"
+description = "Fast, differentiable, batched multi-angle 2D fractional Fourier transform for PyTorch"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Yannick Schrödel" }]
+requires-python = ">=3.10"
+dependencies = ["torch>=2.1"]
+keywords = [
+    "fractional fourier transform",
+    "frft",
+    "pytorch",
+    "fourier optics",
+    "signal processing",
+    "differentiable",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/cptyannick/torch-frft2d"
+Repository = "https://github.com/cptyannick/torch-frft2d"
+Issues = "https://github.com/cptyannick/torch-frft2d/issues"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    "torch-frft>=0.8",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.0,<0.12"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["torch_frft2d"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E731"]  # lambdas are used deliberately for tiny helpers
+
+[tool.ruff.lint.per-file-ignores]
+"src/torch_frft2d/_frft2d.py" = ["E501"]
+
+[tool.ruff.format]
+# the core keeps its hand-aligned layout
+exclude = ["src/torch_frft2d/_frft2d.py"]

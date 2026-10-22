@@ -1,0 +1,72 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - name: Check lockfile is up to date
+        run: uv lock --check
+      - run: uvx ruff check .
+      - run: uvx ruff format --check .
+
+  test:
+    name: py${{ matrix.python }} / ${{ matrix.os }} / ${{ matrix.resolution }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.10", "3.11", "3.12", "3.13"]
+        resolution: [highest]
+        include:
+          # oldest supported dependencies (torch 2.1)
+          - os: ubuntu-latest
+            python: "3.10"
+            resolution: lowest-direct
+          - os: macos-latest
+            python: "3.13"
+            resolution: highest
+          - os: windows-latest
+            python: "3.13"
+            resolution: highest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: ${{ matrix.python }}
+          activate-environment: true
+          enable-cache: true
+      # torch 2.1 wheels are built against NumPy 1.x
+      - name: Constrain NumPy for oldest dependencies
+        if: matrix.resolution == 'lowest-direct'
+        shell: bash
+        run: |
+          echo "numpy<2" > "$RUNNER_TEMP/constraints.txt"
+          echo "UV_CONSTRAINT=$RUNNER_TEMP/constraints.txt" >> "$GITHUB_ENV"
+      # CPU-only torch wheels keep CI fast (the default Linux wheel pulls in CUDA)
+      - name: Install
+        run: uv pip install --torch-backend cpu --resolution ${{ matrix.resolution }} --group dev -e .
+      - name: Run tests
+        run: uv run --no-sync pytest --cov --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+          flags: py${{ matrix.python }}-${{ matrix.os }}-${{ matrix.resolution }}
+          fail_ci_if_error: false

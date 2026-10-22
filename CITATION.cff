@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it, together with the papers describing
+  the underlying fast FrFT algorithm and the torch-frft reference implementation.
+title: "torch-frft2d: fast batched multi-angle 2D fractional Fourier transform for PyTorch"
+type: software
+authors:
+  - family-names: Schrödel
+    given-names: Yannick
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/cptyannick/torch-frft2d"
+references:
+  - type: article
+    title: "Digital computation of the fractional Fourier transform"
+    authors:
+      - family-names: Ozaktas
+        given-names: Haldun M.
+      - family-names: Arikan
+        given-names: Orhan
+      - family-names: Kutay
+        given-names: M. Alper
+      - family-names: Bozdagi
+        given-names: Gozde
+    journal: "IEEE Transactions on Signal Processing"
+    volume: 44
+    issue: 9
+    start: 2141
+    end: 2150
+    year: 1996
+    doi: 10.1109/78.536672
+  - type: article
+    title: "Trainable Fractional Fourier Transform"
+    authors:
+      - family-names: Koç
+        given-names: Emirhan
+      - family-names: Alikaşifoğlu
+        given-names: Tuna
+      - family-names: Aras
+        given-names: Arda Can
+      - family-names: Koç
+        given-names: Aykut
+    journal: "IEEE Signal Processing Letters"
+    volume: 31
+    start: 751
+    end: 755
+    year: 2024
+    doi: 10.1109/LSP.2024.3372779
